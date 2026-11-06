@@ -34,4 +34,8 @@
       go.style.background = '#6c8cff';
     }, 1000);
   };
-  go.onclick = func
+    go.onclick = function () {
+    try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+    o.remove();
+  };
+})();
