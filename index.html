@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Art Scripters Vault</title>
+<style>
+  :root { --bg:#0f1117; --card:#1a1d27; --text:#e8eaf0; --muted:#8b90a0; --accent:#6c8cff; --danger:#ff6b6b; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, sans-serif; background:var(--bg); color:var(--text); }
+  .wrap { max-width:720px; margin:0 auto; padding:16px; }
+  h1 { font-size:1.4rem; margin:8px 0 4px; }
+  .sub { color:var(--muted); font-size:.9rem; margin-bottom:16px; }
+  .box { background:var(--card); border-radius:12px; padding:14px; margin-bottom:12px; }
+  .box h2 { font-size:1rem; margin:0 0 8px; }
+  .box pre { white-space:pre-wrap; word-break:break-word; margin:0 0 10px; font-family:ui-monospace,monospace; font-size:.85rem; background:#12141c; padding:10px; border-radius:8px; max-height:260px; overflow:auto; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:10px 14px; font-size:.95rem; cursor:pointer; }
+  button.ghost { background:#2a2e3d; }
+  button.danger { background:var(--danger); }
+  input, textarea { width:100%; background:#12141c; color:var(--text); border:1px solid #2a2e3d; border-radius:8px; padding:10px; font-size:1rem; margin-bottom:8px; font-family:inherit; }
+  textarea { min-height:120px; resize:vertical; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; }
+  .admin-bar { background:#23283a; border-radius:12px; padding:12px; margin-bottom:16px; display:none; }
+  .msg { color:var(--muted); font-size:.85rem; margin-top:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Art Scripters Vault</h1>
+  <div class="sub">Copy what you need below.</div>
+
+  <div id="adminBar" class="admin-bar">
+    <strong>Admin mode</strong>
+    <div class="row" style="margin-top:8px">
+      <button id="addBtn">+ Add text box</button>
+      <button id="saveBtn" class="ghost">Save all</button>
+    </div>
+    <div id="status" class="msg"></div>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+(function () {
+  var isAdmin = location.hash === '#admin';
+  var boxes = [];
+  var listEl = document.getElementById('list');
+  var statusEl = document.getElementById('status');
+
+  function setStatus(t) { statusEl.textContent = t; }
+
+  function getPassword() {
+    var p = null;
+    try { p = sessionStorage.getItem('adminpw'); } catch (e) {}
+    if (!p) {
+      p = prompt('Admin password:');
+      if (p) { try { sessionStorage.setItem('adminpw', p); } catch (e) {} }
+    }
+    return p;
+  }
+
+  function render() {
+    listEl.innerHTML = '';
+    if (!boxes.length) {
+      var empty = document.createElement('div');
+      empty.className = 'box';
+      empty.textContent = isAdmin ? 'No text boxes yet. Tap "+ Add text box".' : 'Nothing here yet.';
+      listEl.appendChild(empty);
+      return;
+    }
+    boxes.forEach(function (b, i) {
+      var card = document.createElement('div');
+      card.className = 'box';
+      if (isAdmin) {
+        var t = document.createElement('input');
+        t.value = b.title; t.placeholder = 'Title';
+        t.oninput = function () { b.title = t.value; };
+        var x = document.createElement('textarea');
+        x.value = b.text; x.placeholder = 'Text';
+        x.oninput = function () { b.text = x.value; };
+        var row = document.createElement('div'); row.className = 'row';
+        var up = document.createElement('button'); up.className = 'ghost'; up.textContent = '↑';
+        up.onclick = function () { if (i > 0) { boxes.splice(i - 1, 0, boxes.splice(i, 1)[0]); render(); } };
+        var down = document.createElement('button'); down.className = 'ghost'; down.textContent = '↓';
+        down.onclick = function () { if (i < boxes.length - 1) { boxes.splice(i + 1, 0, boxes.splice(i, 1)[0]); render(); } };
+        var del = document.createElement('button'); del.className = 'danger'; del.textContent = 'Delete';
+        del.onclick = function () { if (confirm('Delete this box?')) { boxes.splice(i, 1); render(); } };
+        row.appendChild(up); row.appendChild(down); row.appendChild(del);
+        card.appendChild(t); card.appendChild(x); card.appendChild(row);
+      } else {
+        var h = document.createElement('h2'); h.textContent = b.title || 'Untitled';
+        var pre = document.createElement('pre'); pre.textContent = b.text;
+        var copy = document.createElement('button'); copy.textContent = 'Copy';
+        copy.onclick = function () {
+          function done() { copy.textContent = 'Copied!'; setTimeout(function () { copy.textContent = 'Copy'; }, 1500); }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(b.text).then(done, function () { fallbackCopy(b.text); done(); });
+          } else { fallbackCopy(b.text); done(); }
+        };
+        card.appendChild(h); card.appendChild(pre); card.appendChild(copy);
+      }
+      listEl.appendChild(card);
+    });
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  function load() {
+    fetch('/api/boxes').then(function (r) { return r.json(); }).then(function (data) {
+      boxes = Array.isArray(data) ? data : [];
+      render();
+    }).catch(function () { boxes = []; render(); });
+  }
+
+  if (isAdmin) {
+    document.getElementById('adminBar').style.display = 'block';
+    document.getElementById('addBtn').onclick = function () {
+      boxes.push({ title: '', text: '' }); render();
+      window.scrollTo(0, document.body.scrollHeight);
+    };
+    document.getElementById('saveBtn').onclick = function () {
+      var pw = getPassword();
+      if (!pw) return;
+      setStatus('Saving...');
+      fetch('/api/boxes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': pw },
+        body: JSON.stringify(boxes)
+      }).then(function (r) {
+        if (r.status === 401) { try { sessionStorage.removeItem('adminpw'); } catch (e) {} setStatus('Wrong password.'); return; }
+        if (!r.ok) { setStatus('Save failed.'); return; }
+        setStatus('Saved!');
+      }).catch(function () { setStatus('Save failed.'); });
+    };
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
