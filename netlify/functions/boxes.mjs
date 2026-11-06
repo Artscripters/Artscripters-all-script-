@@ -23,6 +23,7 @@ export default async (req) => {
     const clean = body.map((b) => ({
       title: String((b && b.title) || "").slice(0, 200),
       text: String((b && b.text) || "").slice(0, 50000),
+      link: String((b && b.link) || "").slice(0, 2000),
     }));
     await store.setJSON("boxes", clean);
     return new Response("OK");
