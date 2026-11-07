@@ -20,11 +20,16 @@ export default async (req) => {
     if (!Array.isArray(body) || body.length > 200) {
       return new Response("Bad data", { status: 400 });
     }
-    const clean = body.map((b) => ({
-      title: String((b && b.title) || "").slice(0, 200),
-      text: String((b && b.text) || "").slice(0, 50000),
-      link: String((b && b.link) || "").slice(0, 2000),
-    }));
+    const clean = body.map((b) => {
+      let img = String((b && b.img) || "");
+      if (!img.startsWith("data:image/") || img.length > 200000) img = "";
+      return {
+        title: String((b && b.title) || "").slice(0, 200),
+        text: String((b && b.text) || "").slice(0, 50000),
+        link: String((b && b.link) || "").slice(0, 2000),
+        img: img,
+      };
+    });
     await store.setJSON("boxes", clean);
     return new Response("OK");
   }
