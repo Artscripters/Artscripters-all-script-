@@ -38,4 +38,28 @@
     try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
     o.remove();
   };
+})();(function () {
+  var data = null;
+  function apply() {
+    var list = document.getElementById('list');
+    if (!list || !data || location.hash === '#admin') return;
+    var cards = list.children;
+    for (var i = 0; i < cards.length && i < data.length; i++) {
+      var b = data[i], c = cards[i];
+      if (!b || !b.text || !/^https?:\/\//i.test(b.link || '') || c.querySelector('.desc')) continue;
+      var h = c.querySelector('h2');
+      if (!h) continue;
+      var p = document.createElement('p');
+      p.className = 'desc';
+      p.textContent = b.text;
+      p.style.cssText = 'color:#8b90a0;margin:0 0 10px;white-space:pre-wrap;';
+      h.insertAdjacentElement('afterend', p);
+    }
+  }
+  fetch('/api/boxes', { cache: 'no-store' })
+    .then(function (r) { return r.json(); })
+    .then(function (d) { data = Array.isArray(d) ? d : []; apply(); })
+    .catch(function () {});
+  var list = document.getElementById('list');
+  if (list) new MutationObserver(apply).observe(list, { childList: true });
 })();
