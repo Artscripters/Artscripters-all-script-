@@ -122,3 +122,34 @@
       listEl.appendChild(card);
     });
  }
+  function load() {
+    fetch('/api/boxes').then(function (r) { return r.json(); }).then(function (data) {
+      boxes = Array.isArray(data) ? data : [];
+      render();
+    }).catch(function () { boxes = []; render(); });
+  }
+
+  if (isAdmin) {
+    document.getElementById('adminBar').style.display = 'block';
+    document.getElementById('addBtn').onclick = function () {
+      boxes.push({ title: '', text: '', link: '', img: '' }); render();
+      window.scrollTo(0, document.body.scrollHeight);
+    };
+    document.getElementById('saveBtn').onclick = function () {
+      var pw = getPassword();
+      if (!pw) return;
+      setStatus('Saving...');
+      fetch('/api/boxes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': pw },
+        body: JSON.stringify(boxes)
+      }).then(function (r) {
+        if (r.status === 401) { try { sessionStorage.removeItem('adminpw'); } catch (e) {} setStatus('Wrong password.'); return; }
+        if (!r.ok) { setStatus('Save failed.'); return; }
+        setStatus('Saved!');
+      }).catch(function () { setStatus('Save failed.'); });
+    };
+  }
+
+  load();
+})();
