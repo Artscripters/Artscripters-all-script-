@@ -26,3 +26,7 @@ textarea{min-height:120px;resize:vertical}
 .box .row button{flex:1 1 130px}
 .admin-bar{background:#1b1f4a;border:1px solid var(--accent);border-radius:18px;padding:14px;margin-bottom:18px;display:none}
 .msg{color:var(--muted);font-size:.85rem;margin-top:8px}
+.search{position:relative;margin-bottom:16px}
+.search input{margin:0;padding:14px 14px 14px 44px;border-radius:16px;font-size:1rem}
+.search:before{content:"\1F50D";position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:1rem;opacity:.7}
+.nores{display:none;text-align:center;color:var(--muted);padding:24px 0}
