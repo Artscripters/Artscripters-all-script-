@@ -4,16 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Art Scripters Vault</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Lilita+One&display=swap" rel="stylesheet">
+<script>if(location.hash==='#admin')document.documentElement.classList.add('admin');</script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="theme.css">
 </head>
 <body>
+<div class="topbar"><span class="logo">ART<b>SCRIPTERS</b></span></div>
 <div class="wrap">
   <header class="hero">
-    <div class="kicker">ART SCRIPTERS</div>
-    <h1>Art Scripters Vault</h1>
-    <div class="sub">Get the script you need below.</div>
-    <div class="chips"><span>Free</span><span>Copy &amp; go</span><span>Fresh drops</span></div>
+    <h1>ART SCRIPTERS VAULT</h1>
+    <div class="sub">Free scripts, ready to copy. Fresh drops all the time.</div>
   </header>
 
   <div id="adminBar" class="admin-bar">
@@ -25,12 +26,20 @@
     <div id="status" class="msg"></div>
   </div>
 
-  <div class="section-title"><i></i>Scripts</div>
   <div class="search"><input id="q" type="search" placeholder="Search scripts..." autocomplete="off"></div>
-<div id="list"></div>
-<div id="nores" class="nores">No scripts found.</div>
+  <div class="section-title"><i></i>Latest Scripts</div>
+  <div id="list"></div>
+  <div id="nores" class="nores">No scripts found.</div>
 </div>
+
+<nav class="bottomnav">
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})">🏠<span>Home</span></button>
+  <button onclick="document.getElementById('list').scrollIntoView({behavior:'smooth'})">📜<span>Scripts</span></button>
+  <button onclick="var q=document.getElementById('q');q.scrollIntoView({behavior:'smooth',block:'center'});q.focus()">🔍<span>Search</span></button>
+</nav>
+
 <script src="app.js"></script>
 <script src="gate.js"></script>
-<script src="search.js"></script></body>
+<script src="search.js"></script>
+</body>
 </html>
