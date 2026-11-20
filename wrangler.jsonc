@@ -1,1 +1,9 @@
-"name": "artscriptersvault",
+{
+  "name": "artscriptersvault",
+  "main": "worker.js",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./", "binding": "ASSETS" },
+  "kv_namespaces": [
+    { "binding": "VAULT", "id": "c753f9647f4d4dcfa3257584d67322d7" }
+  ]
+}
