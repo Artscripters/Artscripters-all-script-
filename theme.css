@@ -1,0 +1,15 @@
+:root{--bg:#050d1f;--line:#16407a;--cy:#22d3ee;--gold:#facc15;--tx:#e6f0ff;--mut:#8ea6c9}
+html,body{background:radial-gradient(circle at 50% 0,#0a2a5e 0,#050d1f 55%) fixed #050d1f;color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+body{margin:0;padding-bottom:90px}
+.wrap{max-width:720px;margin:0 auto;padding:0 14px}
+.topbar{position:sticky;top:10px;z-index:40;max-width:690px;margin:10px auto 0;padding:12px 18px;background:rgba(8,20,44,.85);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:22px}
+.logo{font-family:Orbitron,sans-serif;font-weight:800;letter-spacing:1px;color:#fff}
+.logo b{color:var(--gold)}
+.hero{text-align:center;padding:28px 0 10px}
+.hero h1{font-family:Orbitron,sans-serif;font-weight:800;font-size:30px;line-height:1.15;margin:0 0 12px;background:linear-gradient(90deg,#22d3ee,#facc15);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none}
+.hero .sub{color:var(--mut);font-size:16px;line-height:1.5}
+.search{margin:22px 0 8px;padding:10px;border:1px solid var(--line);border-radius:26px;background:rgba(8,20,44,.6)}
+.search input{width:100%;box-sizing:border-box;padding:16px 18px;font-size:17px;color:var(--tx);background:#071328;border:2px solid #1d6fd8;border-radius:22px;outline:none;box-shadow:0 0 14px rgba(34,211,238,.25)}
+.search input::placeholder{color:var(--mut)}
+.section-title{display:flex;align-items:center;gap:10px;font-family:Orbitron,sans-serif;font-weight:800;font-size:22px;margin:26px 0 14px;color:#fff}
+.section-title i{width:8px;height:26px;border-radius:4px;background:linear-gradient(var(--cy),var(--gold))}
