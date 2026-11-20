@@ -1,5 +1,5 @@
 (function () {
-  var GATE_LINK = 'https://link-center.net/9477529/rcDHpdsAPsud';
+    var GATE_LINK = 'https://link-target.net/9477529/0O6N4rewDhe2';
   var WAIT = 10;
   var KEY = 'vaultUnlockedAt';
   if (location.hash === '#admin') return;
